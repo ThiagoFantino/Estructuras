@@ -1,0 +1,98 @@
+Tipo Nodo {
+    Entero valor
+    Nodo* xor_left_parent
+    Nodo* xor_right_parent
+}
+
+Función XOR(Nodo* a, Nodo* b) Devuelve Nodo*:
+    Devolver a XOR b
+
+Función crearNodo(Entero valor) Devuelve Nodo*:
+    Nodo* nuevo = Reservar memoria para Nodo
+    nuevo.valor = valor
+    nuevo.xor_left_parent = NULL
+    nuevo.xor_right_parent = NULL
+    Devolver nuevo
+
+Función obtenerHijoIzquierdo(Nodo* nodo, Nodo* padre) Devuelve Nodo*:
+    Devolver XOR(nodo.xor_left_parent, padre)
+
+Función obtenerHijoDerecho(Nodo* nodo, Nodo* padre) Devuelve Nodo*:
+    Devolver XOR(nodo.xor_right_parent, padre)
+
+Procedimiento insertar(Referencia Nodo* nodo, Nodo* prevLeft, Nodo* prevRight, Entero valor):
+    Si nodo es NULL Entonces
+        nodo = crearNodo(valor)
+        nodo.xor_left_parent = prevLeft
+        nodo.xor_right_parent = prevRight
+        Salir
+    Fin Si
+
+    Si valor es menor que nodo.valor Entonces
+        Nodo* leftChild = obtenerHijoIzquierdo(nodo, prevLeft)
+        insertar(leftChild, nodo, NULL, valor)
+        nodo.xor_left_parent = XOR(prevLeft, leftChild)
+    Sino
+        Nodo* rightChild = obtenerHijoDerecho(nodo, prevRight)
+        insertar(rightChild, NULL, nodo, valor)
+        nodo.xor_right_parent = XOR(prevRight, rightChild)
+    Fin Si
+
+Función contarNodos(Nodo* nodo, Nodo* prevLeft, Nodo* prevRight) Devuelve Entero:
+    Si nodo es NULL Devolver 0
+
+    Entero count = 1
+    count += contarNodos(obtenerHijoIzquierdo(nodo, prevLeft), nodo, NULL)
+    count += contarNodos(obtenerHijoDerecho(nodo, prevRight), NULL, nodo)
+
+    Devolver count
+
+Función buscar(Nodo* nodo, Entero valor, Nodo* prevLeft, Nodo* prevRight) Devuelve Nodo*:
+    Si nodo es NULL Devolver NULL
+
+    Si nodo.valor es igual a valor Devolver nodo
+
+    Si valor es menor que nodo.valor Entonces
+        Devolver buscar(obtenerHijoIzquierdo(nodo, prevLeft), valor, nodo, NULL)
+    Sino
+        Devolver buscar(obtenerHijoDerecho(nodo, prevRight), valor, NULL, nodo)
+    Fin Si
+
+Función altura(Nodo* nodo, Nodo* prevLeft, Nodo* prevRight) Devuelve Entero:
+    Si nodo es NULL Devolver 0
+
+    Entero altIzq = altura(obtenerHijoIzquierdo(nodo, prevLeft), nodo, NULL)
+    Entero altDer = altura(obtenerHijoDerecho(nodo, prevRight), NULL, nodo)
+
+    Devolver 1 + máximo(altIzq, altDer)
+
+Procedimiento cargarDatosDesdeArchivo(Referencia Nodo* raiz):
+    Archivo archivo = abrir "datos.txt" para lectura
+    Si archivo es NULL Entonces
+        Mostrar mensaje de error "No se pudo abrir el archivo"
+        Salir
+    Fin Si
+
+    Mientras leer Entero valor desde archivo Hacer
+        insertar(raiz, NULL, NULL, valor)
+    Fin Mientras
+
+    cerrar archivo
+
+Inicio
+
+    Nodo* raiz = NULL
+    cargarDatosDesdeArchivo(raiz)
+
+    Mostrar "Nodos totales: " + contarNodos(raiz, NULL, NULL)
+
+    Nodo* buscado = buscar(raiz, 5, NULL, NULL)
+    Si buscado no es NULL Entonces
+        Mostrar "Nodo encontrado con valor: " + buscado.valor
+    Sino
+        Mostrar "Nodo no encontrado."
+    Fin Si
+
+    Mostrar "Altura del Arbol: " + altura(raiz, NULL, NULL)
+
+Fin
