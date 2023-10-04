@@ -3,7 +3,7 @@
 
 /************************************************************************************
  * CodigoConArchOp.c
- * Tf, Kypers, Martu, Mate
+ * Tf, Ignacio, Martu, Mate
  * 
  * Este programa crea y busca valores en un arbol binario con enlaces mediante las 
  * vinculaciones de Siklossy (De Morgan). Adicionalmente cuenta los nodos y la
